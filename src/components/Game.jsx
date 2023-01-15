@@ -1,5 +1,6 @@
 import { useState,useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Alert from "./Alert";
 const Game = () => {
   const { name } = useParams();
 
@@ -7,8 +8,10 @@ const Game = () => {
       // const [num, setNum] = useState(0);
       var num = 0;
       var sum = 0;
+      const [message, setMessage] = useState('');
       const [cards, setCards] = useState([]);
       const [isAlive, setIsAlive] = useState(true);
+      const [open, setOpen] = useState(false);
       const handleClick = () =>{
   num = Math.floor(Math.random()*10)+1;
      setCards([...cards,num])
@@ -20,11 +23,15 @@ const Game = () => {
       
     useEffect(()=>{
        if(sum>20){
-        alert('changed');
+         setIsAlive(false);
+         setOpen(true);
+         setMessage('You are out of the game !')
        }
     },[sum])
 
-  
+  const handleClose =() =>{
+  setOpen(false);
+  }
   return (
     <div className="flex w-full min-h-screen items-center justify-center">
       <div className="w-96 h-96 border shadow-md rounded-md flex flex-col px-4 gap-4">
@@ -39,7 +46,7 @@ const Game = () => {
  
              </div>
              <h2>Total : {sum}</h2>
-            <div className="flex flex-row gap-4 ">
+            <div className="flex flex-row gap-4 max-w-xs flex-wrap">
               {cards.map((card,i)=>(
                  <div className="h-8 w-8 shadow-md rounded-sm border text-center font-bold animate-pulse" key={i}>{card}</div>
               ))}
@@ -50,6 +57,7 @@ const Game = () => {
              <label className="flex-1 text-center font-semibold capitalize">{name}:  <span className="text-green-800">$45</span></label>
              
       </div>
+      {open && <Alert message={message} handleClose={handleClose} />}
     </div>
   );
 };
