@@ -1,36 +1,35 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Alert from "./Alert";
+import { Global } from "../context/AppContext";
 const Game = () => {
   const { name } = useParams();
+  const { credit } = Global();
 
-  // const [num, setNum] = useState(0);
   var num = 0;
   var sum = 0;
-   const [count, setCount] = useState(5);
+  const [count, setCount] = useState(5);
   const [message, setMessage] = useState("");
   const [cards, setCards] = useState([]);
-  const [isAlive, setIsAlive] = useState(true);
+
   const [open, setOpen] = useState(false);
   const handleClick = () => {
-    setCount((prevState)=>prevState-1);
+    setCount((prevState) => prevState - 1);
     num = Math.floor(Math.random() * 10) + 1;
     setCards([...cards, num]);
-    if(count===1){
+    if (count === 1) {
       handleOutOfGame();
     }
   };
 
-  const handleOutOfGame = () =>{
-    setIsAlive(false);
-    setCount(5);
-    setCards([]);
+  const handleOutOfGame = () => {
     setMessage("You are Out of the game");
     setOpen(true);
-  }
+  };
 
   cards.map((card) => {
-    return (sum += card);
+    sum += card;
+    return sum;
   });
 
   useEffect(() => {
@@ -41,21 +40,23 @@ const Game = () => {
       setMessage("You got a Black Jack");
       setCards([]);
       setCount(5);
-      setIsAlive(false);
-    } 
+    }
   }, [sum]);
 
   const handleClose = () => {
     setOpen(false);
+    setCount(5);
+    setCards([]);
   };
   return (
     <div className="flex w-full min-h-screen items-center justify-center">
       <div className="w-96 h-96 border shadow-md rounded-md flex flex-col px-4 gap-4">
         <div className="text-center p-2 font-bold font-mono text-3xl first-letter:text-sky-500 uppercase">
           Black<span className="text-red-500">J</span>ack
-         
         </div>
-        <h4 className="text-center p-2">Cards Remaining : <span className="text-sky-500 ">{count}</span></h4>
+        <h4 className="text-center p-2">
+          Cards Remaining : <span className="text-sky-500 ">{count}</span>
+        </h4>
         <div className="content flex gap-4 flex-col ml-20 flex-1">
           <h2>Total : {sum}</h2>
 
@@ -81,10 +82,10 @@ const Game = () => {
           </button>
         </div>
         <label className="flex-1 text-center font-semibold capitalize">
-          {name}: <span className="text-green-800">$45</span>
+          {name}: <span className="text-green-800">${credit}</span>
         </label>
       </div>
-      {open && <Alert message={message} handleClose={handleClose} />}
+      {open && <Alert message={message} handleClose={handleClose} sum={sum} />}
     </div>
   );
 };
